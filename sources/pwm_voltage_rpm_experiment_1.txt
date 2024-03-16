@@ -1,0 +1,8 @@
+Initial battery no load: 12.86V
+Final battery no load: 12.55V
+
+Initial battery full load (PWM = 255): 12.66V
+Final battery full load: 12.34V
+
+Motor voltage full load (before experiment): 11.4V
+Motor voltage: 11V
