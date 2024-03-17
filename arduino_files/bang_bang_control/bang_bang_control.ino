@@ -8,11 +8,10 @@
 unsigned int pwmOutput = 0;
 unsigned int startTime = millis();
 unsigned int count = 0;
-unsigned int sampleRate = 10;
-unsigned int lastValue = 0;
+unsigned int sampleRate = 20;
+unsigned int setPoint = 0; //speed in RPM
 void setup() {
   Serial.begin(115200); //initializing the serial monitor
-  Serial.println("Code started...");
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   pinMode(EN, OUTPUT); //setting IN1, IN2, EN as output
@@ -28,19 +27,27 @@ void setup() {
 
 void loop() {
   if (Serial.available() > 0){
-    pwmOutput = Serial.parseInt();
-    analogWrite(EN, pwmOutput); // if are bytes in the serial buffer, parse int and write it to the EN pin
+    setPoint = Serial.parseInt();
   }
 }
 
 void printCount(){
-  
   Timer1.detachInterrupt();
-  Serial.print("PWM: ");
-  Serial.print(pwmOutput);
-  Serial.print(" count per second: ");
-  Serial.println(((lastValue + count)*sampleRate)/2);
-  lastValue = count;
+  int rpm = (count*sampleRate)*3;
+  if (rpm < setPoint){
+    digitalWrite(EN, HIGH);
+  }
+  else{
+    digitalWrite(EN, LOW);
+  }
+  // Serial.print("Setpoint: ");
+  Serial.print(setPoint);
+  Serial.print(", ");
+  // Serial.print(", State: ");
+  Serial.print(rpm < setPoint);
+  // Serial.print(", rpm: ");
+  Serial.print(", ");
+  Serial.println(rpm);
   count = 0;
   Timer1.attachInterrupt(printCount);
 }
